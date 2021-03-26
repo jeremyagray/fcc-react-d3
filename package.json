@@ -1,28 +1,5 @@
 {
-  "name": "fcc-react-d3",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+  "author": "Jeremy A Gray <gray@flyquackswim.com> (http://www.flyquackswim.com/)",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -34,5 +11,80 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/jeremyagray/fcc-react-d3/issues"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.8.3",
+    "d3": "^6.6.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "topojson-client": "^3.1.0",
+    "web-vitals": "^1.1.1"
+  },
+  "description": "FCC React/D3 Demonstration",
+  "devDependencies": {
+    "eslint-plugin-jest-dom": "^3.6.5",
+    "eslint-plugin-testing-library": "^3.10.2"
+  },
+  "directories": {},
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "homepage": "https://github.com/jeremyagray/fcc-react-d3",
+  "license": "MIT",
+  "main": "backend/server.js",
+  "name": "fcc-react-d3",
+  "pccc": {
+    "header_length": 50,
+    "body_length": 72,
+    "rewrap": true,
+    "spell_check": false,
+    "repair": false,
+    "types": [
+      "build",
+      "depends",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "style",
+      "testing"
+    ],
+    "scopes": [
+      "assets",
+      "d3",
+      "react",
+      "views"
+    ],
+    "footers": [
+      "signed-off-by"
+    ],
+    "required_footers": [
+      "signed-off-by"
+    ]
+  },
+  "scripts": {
+    "build": "react-scripts build",
+    "cover": "react-scripts test --coverage",
+    "lint": "eslint '**/*.js'",
+    "lint-fix": "eslint '**/*.js' --fix",
+    "start": "BROWSER=none react-scripts start",
+    "test": "react-scripts test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremyagray/fcc-react-d3.git"
+  },
+  "keywords": [
+    "d3",
+    "node",
+    "react"
+  ],
+  "version": "0.0.1"
 }
