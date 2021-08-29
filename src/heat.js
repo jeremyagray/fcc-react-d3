@@ -192,7 +192,7 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
 	    // .style('fill', 'yellow')
 	    .style('fill', (d, i) =>
                    {
-                     console.log(getGraphScaleColor(d.variance));
+                     // console.log(getGraphScaleColor(d.variance));
                      return getGraphScaleColor(d.variance);
                    })
           // D3 v6 mouse events.
