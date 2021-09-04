@@ -10,27 +10,26 @@ function HeatMap() {
   return (
     <div className="HeatMap">
       <HeatMapTitle />
-      <HeatMapFigure />
+      <HeatMapContainer />
     </div>
   );
 }
 
 function HeatMapTitle() {
   return (
-    <h1
+    <h2
       id="title"
     >
       Monthly Average Temperature
-    </h1>
+    </h2>
   );
 }
 
-function HeatMapFigure() {
+function HeatMapContainer() {
   return (
-    <figure>
+    <div className="HeatMapContainer">
       <HeatMapSVG />
-      <HeatMapDescription />
-    </figure>
+    </div>
   );
 }
 
@@ -107,14 +106,36 @@ function generateHeatMap(data, element='div') {
   const parseMonth = d3.timeParse('%m');
 
   // Dimensions of graph.
-  const pallette = {height: 800, width: 1200};
-  const padding = {top: 40, right: 40, bottom: 80, left: 60};
-  const graphSize = {height: pallette.height - padding.top - padding.bottom, width: pallette.width - padding.left - padding.right};
-  const graphPositions = {top: padding.top, right: pallette.width - padding.right, bottom: pallette.height - padding.bottom, left: padding.left, center: ((pallette.width - padding.right) + padding.left) / 2};
-  const cell = {height: graphSize.height / months, width: graphSize.width / years};
+  const pallette = {
+    height: 800,
+    width: 1200
+  };
+  const padding = {
+    top: 40,
+    right: 40,
+    bottom: 80,
+    left: 60
+  };
+  const graphSize = {
+    height: pallette.height - padding.top - padding.bottom,
+    width: pallette.width - padding.left - padding.right
+  };
+  const graphPositions = {
+    top: padding.top,
+    right: pallette.width - padding.right,
+    bottom: pallette.height - padding.bottom,
+    left: padding.left, center: ((pallette.width - padding.right) + padding.left) / 2
+  };
+  const cell = {
+    height: graphSize.height / months,
+    width: graphSize.width / years
+  };
   
   // Dimensions of tooltip.
-  const tooltipSize = {height: 50, width: 200};
+  const tooltipSize = {
+    height: 50,
+    width: 200
+  };
 
   // Scales.
 
@@ -160,16 +181,6 @@ function generateHeatMap(data, element='div') {
   let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
   let getLegendScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
 
-  // Description container and description.
-  const descriptionContainer = d3.select(element)
-        .append('div')
-        .attr('id', 'description-container')
-
-  const description = d3.select('div#description-container')
-        .append('div')
-        .attr('id', 'description')
-        .html('<p>Monthly Global Land Temperature, 1753-2015<\/p>');
-
   // SVG container and canvas.
   const svgContainer = d3.select(element)
         .append('div')
@@ -185,6 +196,17 @@ function generateHeatMap(data, element='div') {
 
   console.log('two');
 
+  // Description container and description.
+  const descriptionContainer = d3.select(element)
+        .append('div')
+  // .selectAll('div#descriptionContainer')
+        .attr('id', 'descriptionContainer')
+
+  const description = d3.select('div#descriptionContainer')
+        .append('div')
+        .attr('id', 'description')
+        .html('<p>Monthly Global Land Temperature, 1753-2015</p>');
+
   // Legend.
   let legendDomain = [];
   let legendSteps = legendColorScale.domain()[1] - legendColorScale.domain()[0];
@@ -195,10 +217,26 @@ function generateHeatMap(data, element='div') {
   }
 
   const legendSquare = 30;
-  const legendPallette = {height: 1 * legendSquare, width: (legendSteps + 2) * legendSquare};
-  const legendPadding = {top: legendSquare, right: legendSquare, bottom: legendSquare, left: legendSquare};
-  const legendSize = {height: legendPallette.height + legendPadding.top + legendPadding.bottom, width: legendPallette.width + legendPadding.left + legendPadding.right};
-  const legendPositions = {top: legendPadding.top, right: legendSize.width - legendPadding.right, bottom: legendSize.height - legendPadding.bottom, left: legendPadding.left};
+  const legendPallette = {
+    height: 1 * legendSquare,
+    width: (legendSteps + 2) * legendSquare
+  };
+  const legendPadding = {
+    top: legendSquare,
+    right: legendSquare,
+    bottom: legendSquare,
+    left: legendSquare
+  };
+  const legendSize = {
+    height: legendPallette.height + legendPadding.top + legendPadding.bottom,
+    width: legendPallette.width + legendPadding.left + legendPadding.right
+  };
+  const legendPositions = {
+    top: legendPadding.top,
+    right: legendSize.width - legendPadding.right,
+    bottom: legendSize.height - legendPadding.bottom,
+    left: legendPadding.left
+  };
 
   const legendContainer = d3.select(element)
         .append('div')
@@ -209,7 +247,7 @@ function generateHeatMap(data, element='div') {
         .attr('id', 'legend-description-container');
 
   const legendDescription = d3.select('div#legend-description-container')
-        .html('<p>Variance (Celsius)<\/p>');
+        .html('<p>Variance (Celsius)</p>');
 
   const legendSvgContainer = d3.select('div#legend-container')
         .append('div')
@@ -222,16 +260,16 @@ function generateHeatMap(data, element='div') {
         .attr('width', legendSize.width)
 
   const legendRects = legendSvg
-    .selectAll('rect.colorLegend')
-    .data(legendDomain)
-    .enter()
-    .append('rect')
-    .attr('class', 'colorLegend')
-    .attr('height', legendSquare)
-    .attr('width', legendSquare)
-    .attr('x', (d, i) => {return legendPositions.left + legendSquare * (i + 1);})
-    .attr('y', legendPositions.bottom - 30)
-    .style('fill', (d, i) => {return getLegendScaleColor(d);});
+        .selectAll('rect.colorLegend')
+        .data(legendDomain)
+        .enter()
+        .append('rect')
+        .attr('class', 'colorLegend')
+        .attr('height', legendSquare)
+        .attr('width', legendSquare)
+        .attr('x', (d, i) => {return legendPositions.left + legendSquare * (i + 1);})
+        .attr('y', legendPositions.bottom - 30)
+        .style('fill', (d, i) => {return getLegendScaleColor(d);});
 
   const legendXAxis = d3
         .axisBottom(legendColorScale.range([legendPositions.left + legendSquare, legendPositions.right - legendSquare]))
@@ -240,7 +278,7 @@ function generateHeatMap(data, element='div') {
   legendSvg.append("g")
   // svg.append("g")
     .attr("id", "legend-x-axis")
-    .attr("transform", "translate(0, " + (legendPositions.bottom) + ")")
+    .attr("transform", `translate(0, ${legendPositions.bottom})`)
     .call(legendXAxis);
 
   // // Tooltip.
@@ -313,15 +351,15 @@ function generateHeatMap(data, element='div') {
           .style('position', 'absolute')
           .style('visibility', 'visible')
           .style('opacity', '0.50')
-          .style('left', (event.pageX + 20) + 'px')
-          .style('top', (event.pageY + 20) + 'px')
+          .style('left', `${event.pageX + 20}px`)
+          .style('top', `${event.pageY + 20}px`)
           .style('border', '2px solid white')
           .attr('data-year', datum.year)
           .attr('data-month', parseMonth(datum.month))
           .attr('data-temp', baseline + datum.variance)
           .attr('data-variance', datum.variance)
           .style('background-color', getGraphScaleColor(datum.variance))
-          .html('<p>' + parseMonth(datum.month).toLocaleString('default', {month: 'long'}) + ' ' + parseYear(datum.year).getFullYear() + ':  ' + datum.variance + '&#176;C<\/p>');
+          .html(`<p>${parseMonth(datum.month).toLocaleString('default', {month: 'long'})} ${parseYear(datum.year).getFullYear()}:  ${datum.variance}&#176;C</p>`);
       })
     .on('mousemove', (event, datum) =>
       {
@@ -340,11 +378,11 @@ function generateHeatMap(data, element='div') {
   
   svg.append("g")
     .attr("id", "x-axis")
-    .attr("transform", "translate(0, " + (graphPositions.bottom) + ")")
+    .attr("transform", `translate(0, ${graphPositions.bottom})`)
     .call(xAxis);
 
   svg.append("g")
     .attr("id", "y-axis")
-    .attr("transform", "translate(" + graphPositions.left + ")")
+    .attr("transform", `translate(${graphPositions.left})`)
     .call(yAxis);
 }
