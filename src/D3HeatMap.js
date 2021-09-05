@@ -9,7 +9,6 @@ import * as d3 from 'd3';
 function HeatMap() {
   return (
     <div className="HeatMap">
-      <HeatMapTitle />
       <HeatMapContainer />
     </div>
   );
@@ -111,10 +110,10 @@ function generateHeatMap(data, element='div') {
     width: 1200
   };
   const padding = {
-    top: 40,
+    top: 60,
     right: 40,
-    bottom: 80,
-    left: 60
+    bottom: 120,
+    left: 100
   };
   const graphSize = {
     height: pallette.height - padding.top - padding.bottom,
@@ -196,16 +195,24 @@ function generateHeatMap(data, element='div') {
 
   console.log('two');
 
-  // Description container and description.
-  const descriptionContainer = d3.select(element)
-        .append('div')
-  // .selectAll('div#descriptionContainer')
-        .attr('id', 'descriptionContainer')
+  // Graph title.
+  svg.append("text")
+    .attr('id', 'title')
+    .attr("x", (pallette.width / 2))
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "24px")
+    .style("text-decoration", "underline")
+    .text('Monthly Average Temperatures');
 
-  const description = d3.select('div#descriptionContainer')
-        .append('div')
-        .attr('id', 'description')
-        .html('<p>Monthly Global Land Temperature, 1753-2015</p>');
+  // Graph description.
+  svg.append("text")
+    .attr('id', 'description')
+    .attr("x", (pallette.width / 2))
+    .attr("y", 40)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .text('Monthly Global Land Temperature, 1753-2015');
 
   // Legend.
   let legendDomain = [];
@@ -238,28 +245,9 @@ function generateHeatMap(data, element='div') {
     left: legendPadding.left
   };
 
-  const legendContainer = d3.select(element)
-        .append('div')
-        .attr('id', 'legend-container');
-
-  const legendDescriptionContainer = d3.select('div#legend-container')
-        .append('div')
-        .attr('id', 'legend-description-container');
-
-  const legendDescription = d3.select('div#legend-description-container')
-        .html('<p>Variance (Celsius)</p>');
-
-  const legendSvgContainer = d3.select('div#legend-container')
-        .append('div')
-        .attr('id', 'legend-svg-container');
-
-  const legendSvg = d3.select('div#legend-svg-container')
-        .append('svg')
+  const legendRects = svg
+        .append('g')
         .attr('id', 'legend')
-        .attr('height', legendSize.height)
-        .attr('width', legendSize.width)
-
-  const legendRects = legendSvg
         .selectAll('rect.colorLegend')
         .data(legendDomain)
         .enter()
@@ -267,27 +255,32 @@ function generateHeatMap(data, element='div') {
         .attr('class', 'colorLegend')
         .attr('height', legendSquare)
         .attr('width', legendSquare)
-        .attr('x', (d, i) => {return legendPositions.left + legendSquare * (i + 1);})
-        .attr('y', legendPositions.bottom - 30)
+        .attr('x', (d, i) => {return legendPositions.left + ((graphSize.width / 2) - 210) + legendSquare * (i + 1);})
+        .attr('y', pallette.height - 90)
         .style('fill', (d, i) => {return getLegendScaleColor(d);});
 
   const legendXAxis = d3
         .axisBottom(legendColorScale.range([legendPositions.left + legendSquare, legendPositions.right - legendSquare]))
         .ticks(legendSteps);
 
-  legendSvg.append("g")
-  // svg.append("g")
+  svg
+    .append('text')
+    .attr('id', 'legendDescription')
+    .attr('x', pallette.width / 2)
+    .attr('y', pallette.height - 20)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .text('Variance (Celsius)');
+
+  svg.append("g")
     .attr("id", "legend-x-axis")
-    .attr("transform", `translate(0, ${legendPositions.bottom})`)
+    .attr("transform", `translate(${(graphSize.width / 2) - 210}, ${pallette.height - 60})`)
     .call(legendXAxis);
 
-  // // Tooltip.
-  // const legendTooltipContainer = d3.select('div#legend-container')
-  //       .append('div')
-  //       .attr('id', 'legend-tooltip-container');
+  // Set the font-size of the legend ticks.
+  svg.selectAll('g#legend-x-axis>g.tick>text').style('font-size', '16px')
 
   const legendTooltip =
-        // d3.select('div#legend-tooltip-container')
         d3.select('body')
         .append('div')
         .attr('id', 'tooltip')
@@ -297,11 +290,9 @@ function generateHeatMap(data, element='div') {
         .style('height', tooltipSize.height)
         .style('width', tooltipSize.width)
         .style('opacity', '0')
-  // .style('display', 'none')
         .style('visibility', 'hidden');
 
   // Axes.
-  
   const xAxis = d3.axisBottom(xScale)
 	.ticks(Math.floor(years/10))
 	.tickFormat(d3.timeFormat('%Y'));
@@ -385,4 +376,8 @@ function generateHeatMap(data, element='div') {
     .attr("id", "y-axis")
     .attr("transform", `translate(${graphPositions.left})`)
     .call(yAxis);
+
+  // Set x/y axis tick font-size.
+  svg.selectAll('g#x-axis>g.tick>text').style('font-size', '16px')
+  svg.selectAll('g#y-axis>g.tick>text').style('font-size', '16px')
 }
