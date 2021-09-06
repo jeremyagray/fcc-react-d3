@@ -3,8 +3,9 @@ import {
 } from 'react';
 
 import './D3Selector.css';
-import HeatMap from './D3HeatMap.js'
 import BarChart from './D3BarChart.js'
+import ScatterChart from './D3ScatterChart.js'
+import HeatMap from './D3HeatMap.js'
 
 function Selector() {
   const [graph, setGraph] = useState('bar');
@@ -17,6 +18,16 @@ function Selector() {
           setGraph={setGraph}
         />
         <BarChart />
+      </div>
+    );
+  } else if (graph === 'scatter') {
+    return (
+      <div className="root">
+        <SelectorDropDown
+          graph={graph}
+          setGraph={setGraph}
+        />
+        <ScatterChart />
       </div>
     );
   } else if (graph === 'heat') {
@@ -40,7 +51,7 @@ function SelectorDropDown(props) {
   
   return (
     <div id='SelectorDropDown'>
-      <label for="graph-select">Select a Graph:</label>
+      <label htmlFor="graph-select">Select a Graph:</label>
       <br />
       <select
         name="graphs"
@@ -49,6 +60,7 @@ function SelectorDropDown(props) {
         onChange={changer}
       >
         <option value="bar">Bar Chart</option>
+        <option value="scatter">Scatter Chart</option>
         <option value="heat">Heat Map</option>
       </select>
     </div>
