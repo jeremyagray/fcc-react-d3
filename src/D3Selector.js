@@ -7,6 +7,7 @@ import BarChart from './D3BarChart.js';
 import ScatterChart from './D3ScatterChart.js';
 import HeatMap from './D3HeatMap.js';
 import Choropleth from './D3Choropleth.js';
+import TreeMapGames from './D3TreeMap.js';
 
 function Selector() {
   const [graph, setGraph] = useState('bar');
@@ -51,15 +52,36 @@ function Selector() {
         <Choropleth />
       </div>
     );
+  } else if (graph === 'games') {
+    return (
+      <div className="root">
+        <SelectorDropDown
+          graph={graph}
+          setGraph={setGraph}
+        />
+        <TreeMapGames />
+      </div>
+    );
   }
-  // } else if (graph === 'games') {
+  // } else if (graph === 'movies') {
   //   return (
   //     <div className="root">
   //       <SelectorDropDown
   //         graph={graph}
   //         setGraph={setGraph}
   //       />
-  //       <HeatMap />
+  //       <TreeMapMovies />
+  //     </div>
+  //   );
+  // }
+  // } else if (graph === 'pledges') {
+  //   return (
+  //     <div className="root">
+  //       <SelectorDropDown
+  //         graph={graph}
+  //         setGraph={setGraph}
+  //       />
+  //       <TreeMapPledges />
   //     </div>
   //   );
   // }
@@ -84,7 +106,10 @@ function SelectorDropDown(props) {
         <option value="bar">Bar Chart</option>
         <option value="scatter">Scatter Chart</option>
         <option value="heat">Heat Map</option>
-        <option value="choro">Choropleth Map</option>
+        <option value="choro">Choropleth</option>
+        <option value="games">Tree Map:  Games</option>
+        <option value="movies">Tree Map:  Movies</option>
+        <option value="pledges">Tree Map:  Pledges</option>
       </select>
     </div>
   );
