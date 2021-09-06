@@ -89,19 +89,12 @@ function TreeMapGamesSVG() {
 export default TreeMapGames;
 
 function generateTreeMapGames(games, element) {
-  // // Grab datasets via JSON.
-  // // Education and geographic data
-  // Promise.all([
-  //   // Kickstarter pledges.
-  //   d3.json('https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json'),
-  //   // Movie sales.
-  //   d3.json('https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json'),
-  //   // Video games sales.
-  //   d3.json('https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json')
-  // ])
-  //   .then(([kicks, movies, games]) =>
-  //         {
-  // Data massage.
+  // Kickstarter pledges.
+  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json
+  // Movie sales.
+  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json
+  // Video games sales.
+  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json
 
   // Visualization properties.
 
@@ -273,15 +266,10 @@ function generateTreeMapGames(games, element) {
   //   .attr("transform", "translate(0, " + (legendPositions.bottom) + ")")
   //   .call(legendXAxis);
 
-  // Tooltip.
-  const legendTooltipContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-tooltip-container');
-
-  const legendTooltip = d3.select('div#legend-tooltip-container')
+  const tooltip = d3.select(element)
         .append('div')
         .attr('id', 'tooltip')
-        .attr('data-education', '')
+        .attr('data-value', '')
         .style('height', tooltipSize.height)
         .style('width', tooltipSize.width)
         .style('opacity', '0')
@@ -315,21 +303,29 @@ function generateTreeMapGames(games, element) {
       })
     .style('stroke', 'white')
     .style('opacity', '0.3')
-  // D3 v6 mouse events.
     .on('mouseenter mouseover', (event, datum) =>
       {
-        const tooltip = d3.select('div#tooltip')
-              .attr('id', 'tooltip')
-              .style('display', 'flex')
-              .style('visibility', 'visible')
-              .style('opacity', '0.50')
-              .attr('data-value', datum.value)
-              .style('background', getGraphScaleColor(datum.parent.data.name))
-              .html('<p>' + datum.data.name + ' (' + datum.data.category + '):  ' + datum.value + '<\/p>');
+        tooltip
+          .attr('id', 'tooltip')
+          .style('display', 'inline')
+          .style('position', 'absolute')
+          .style('visibility', 'visible')
+          .style('opacity', '0.50')
+          .style('left', (event.pageX + 20) + 'px')
+          .style('top', (event.pageY + 20) + 'px')
+          .attr('data-value', datum.value)
+          .style('background', getGraphScaleColor(datum.parent.data.name))
+          .html('<p>' + datum.data.name + ' (' + datum.data.category + '):  ' + datum.value + '<\/p>');
+      })
+    .on('mousemove', (event, datum) =>
+      {
+        tooltip
+          .style('left', (event.pageX + 20) + 'px')
+          .style('top', (event.pageY + 20) + 'px');
       })
     .on('mouseout mouseleave', (event, datum) =>
       {
-        d3.select('div#tooltip')
+        tooltip
           .style('opacity', '0')
           .style('display', 'none')
           .style('visibility', 'hidden');
@@ -351,13 +347,4 @@ function generateTreeMapGames(games, element) {
       {
         return d.data.name;
       });
-  //       })
-  // .catch((error) =>
-  //        {
-  //          console.log('caught error ' + error);
-  //        })
-  // .finally(() =>
-  //          {
-  //            console.log('Visualization completed.');
-  //          });
 }
