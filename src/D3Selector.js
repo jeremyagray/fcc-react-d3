@@ -3,9 +3,10 @@ import {
 } from 'react';
 
 import './D3Selector.css';
-import BarChart from './D3BarChart.js'
-import ScatterChart from './D3ScatterChart.js'
-import HeatMap from './D3HeatMap.js'
+import BarChart from './D3BarChart.js';
+import ScatterChart from './D3ScatterChart.js';
+import HeatMap from './D3HeatMap.js';
+import Choropleth from './D3Choropleth.js';
 
 function Selector() {
   const [graph, setGraph] = useState('bar');
@@ -40,7 +41,28 @@ function Selector() {
         <HeatMap />
       </div>
     );
+  } else if (graph === 'choro') {
+    return (
+      <div className="root">
+        <SelectorDropDown
+          graph={graph}
+          setGraph={setGraph}
+        />
+        <Choropleth />
+      </div>
+    );
   }
+  // } else if (graph === 'games') {
+  //   return (
+  //     <div className="root">
+  //       <SelectorDropDown
+  //         graph={graph}
+  //         setGraph={setGraph}
+  //       />
+  //       <HeatMap />
+  //     </div>
+  //   );
+  // }
 
 }
 
@@ -62,6 +84,7 @@ function SelectorDropDown(props) {
         <option value="bar">Bar Chart</option>
         <option value="scatter">Scatter Chart</option>
         <option value="heat">Heat Map</option>
+        <option value="choro">Choropleth Map</option>
       </select>
     </div>
   );
