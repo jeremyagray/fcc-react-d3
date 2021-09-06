@@ -1,11 +1,26 @@
+#SelectorDropDown {
+    text-align: center;
+}
+
 div
 {
-    border: 2px solid #000000;
-    margin: 5px 5px 5px 5px;
-    padding: 5px 5px 5px 5px;
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* border: 2px solid #000000; */
+    /* margin: 5px 5px 5px 5px; */
+    /* padding: 5px 5px 5px 5px; */
 }
 
 svg
 {
-    border: 2px solid gold;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* border: 2px solid gold; */
+}
+
+.bar:hover
+{
+    fill: #ffffff;
 }
