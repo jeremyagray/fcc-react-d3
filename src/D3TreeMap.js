@@ -41,7 +41,6 @@ function TreeMapGamesSVG() {
       try {
         const response = await axios.get(dataURL);
         if (isMounted) {
-          console.log(response.data);
           setData(response.data);
           setLoadingData(false);
           generateTreeMapGames(data, ref.current);
@@ -122,15 +121,30 @@ function generateTreeMapGames(games, element) {
   };
 
   const legendDimensions = {
-    'height': 150,
-    'width': 250,
-    'top': 100,
-    'left': 900
+    'height': 250,
+    'width': 800,
+    'squareSize': 30,
+    'columns': 6,
+  };
+
+  const legendPadding = {
+    'top': 10,
+    'right': 10,
+    'bottom': 10,
+    'left': 10
+  };
+
+  const legendPositions = {
+    'top': legendPadding.top,
+    'right': legendDimensions.width - legendPadding.right,
+    'bottom': legendDimensions.height - legendPadding.bottom,
+    'left': legendPadding.left,
+    'columnWidth': (legendDimensions.width - legendPadding.left -legendPadding.right) / legendDimensions.columns
   };
 
   const tooltipDimensions = {
-    height: 50,
-    width: 200
+    'height': 50,
+    'width': 200
   };
 
   // Hierarchy and treemap.
@@ -147,42 +161,15 @@ function generateTreeMapGames(games, element) {
         .tile(d3.treemapSquarify);
   treemap(root);
 
-  const catMax = d3.max(root, (d) =>
-    {
-      if (d.depth === 1)
-      {
-        return d.value;
-      }
-    });
-  const catMin = d3.min(root, (d) =>
-    {
-      if (d.depth === 1)
-      {
-        return d.value;
-      }
-    });
-  console.log(catMax);
-  console.log(catMin);
-
   // Color scale.
   let getGraphScaleColor = d3.scaleOrdinal(d3.schemeCategory10);
-  // let getGraphScaleColor = d3.scaleOrdinal(d3.schemeBlues);
-  // let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
-  // let graphColorScale = d3.scaleSequentialLog()
-  //     .domain([0, 10]);
-  // let graphColorScale = d3.scaleLinear()
-  //     .domain([catMin, catMax]);
-  let legendColorScale = d3.scaleSequential()
-      .domain([0, 10]);
-  // let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
-  let getLegendScaleColor = legendColorScale.interpolator(d3.interpolateBlues);
 
   // Visualization SVG.
   const svg = d3.select(element)
-        .append("svg")
-        .attr("id", "title")
-        .attr("height", palletteDimensions.height)
-        .attr("width", palletteDimensions.width)
+        .append('svg')
+        .attr('id', 'title')
+        .attr('height', palletteDimensions.height)
+        .attr('width', palletteDimensions.width)
         .style('background-color', '#ffffff')
 
   // Graph title.
@@ -205,86 +192,47 @@ function generateTreeMapGames(games, element) {
     .text('Video Game Sales (millions) by Console');
 
   // Legend.
-  let legendDomain = [];
-  let legendSteps = 10
-  let legendStart = (2 * legendColorScale.domain()[0] + 1) / 2;
-  for (let i = 0; i < legendSteps; i++)
-  {
-    legendDomain.push(legendStart + i);
-  }
-
-  const legendSquare = 30;
-  const legendPallette = {height: 250, width: 600};
-  const legendPadding = {top: 10, right: 10, bottom: 10, left: 10};
-  // const legendPallette = {height: 1 * legendSquare, width: (legendSteps + 2) * legendSquare};
-  // const legendPadding = {top: legendSquare, right: legendSquare, bottom: legendSquare, left: legendSquare};
-  const legendSize = {height: legendPallette.height + legendPadding.top + legendPadding.bottom, width: legendPallette.width + legendPadding.left + legendPadding.right};
-  const legendPositions = {top: legendPadding.top, right: legendSize.width - legendPadding.right, bottom: legendSize.height - legendPadding.bottom, left: legendPadding.left};
-
-  const legendContainer = d3.select('body')
-	.append('div')
-	.attr('id', 'legend-container');
-
-  const legendDescriptionContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-description-container');
-
-  const legendDescription = d3.select('div#legend-description-container')
-        .html('');
-
-  const legendSvgContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-svg-container');
-
-  const legendSvg = d3.select('div#legend-svg-container')
-        .append('svg')
+  const legend = svg
+        .append('g')
         .attr('id', 'legend')
-        .attr('height', legendSize.height)
-        .attr('width', legendSize.width)
+        .attr('height', legendDimensions.height)
+        .attr('width', legendDimensions.width)
+        .attr('transform', `translate(${(palletteDimensions.width - legendDimensions.width) / 2}, ${graphDimensions.bottom + 20})`);
 
-  const legendRects = legendSvg.selectAll('rect')
-        .data(root.children)
-        .enter()
-        .append('rect')
-        .attr('class', 'legend-item')
-        .attr('height', legendSquare)
-        .attr('width', legendSquare)
-        .attr('x', (d, i) =>
-          {
-            return legendPositions.left + (Math.floor(i / 6) * 200);
-          })
-        .attr('y', (d, i) =>
-          {
-            return legendPositions.top + ((i + 1) % 6) * 40;
-          })
-        .style('opacity', '0.3')
-        .style('fill', (d, i) => {return getGraphScaleColor(d.data.name);});
+  legend.selectAll('rect')
+    .data(root.children)
+    .enter()
+    .append('rect')
+    .attr('class', 'legend-item')
+    .attr('height', legendDimensions.squareSize)
+    .attr('width', legendDimensions.squareSize)
+    .attr('x', (d, i) =>
+      {
+        return legendPositions.left + (Math.floor(i / 3) * legendPositions.columnWidth);
+      })
+    .attr('y', (d, i) =>
+      {
+        return legendPositions.top + ((i + 1) % 3) * 40;
+      })
+    .style('opacity', '0.3')
+    .style('fill', (d, i) => {return getGraphScaleColor(d.data.name);});
 
-  legendSvg.selectAll('text')
+  legend.selectAll('text')
     .data(root.children)
     .enter()
     .append('text')
     .attr('x', (d, i) =>
       {
-        return legendPositions.left + legendSquare + (Math.floor(i / 6) * 200 + 5);
+        return legendPositions.left + legendDimensions.squareSize + (Math.floor(i / 3) * legendPositions.columnWidth + 5);
       })
     .attr('y', (d, i) =>
       {
-        return legendPositions.top + ((i + 1) % 6) * 40 + 20;
+        return legendPositions.top + ((i + 1) % 3) * 40 + 20;
       })
     .text((d, i) =>
       {
         return d.data.name;
       });
-
-  // const legendXAxis = d3.axisBottom(legendColorScale.range([legendPositions.left + legendSquare, legendPositions.right - legendSquare]))
-  //       .ticks(legendSteps)
-  //       .tickFormat((t) => {return t * 10;});
-
-  // legendSvg.append("g")
-  //   .attr("id", "legend-x-axis")
-  //   .attr("transform", "translate(0, " + (legendPositions.bottom) + ")")
-  //   .call(legendXAxis);
 
   const tooltip = d3.select(element)
         .append('div')
@@ -335,7 +283,7 @@ function generateTreeMapGames(games, element) {
           .style('display', 'inline')
           .style('position', 'absolute')
           .style('visibility', 'visible')
-          .style('opacity', '0.50')
+          .style('opacity', '1.00')
           .style('left', (event.pageX + 20) + 'px')
           .style('top', (event.pageY + 20) + 'px')
           .attr('data-value', datum.value)
@@ -372,7 +320,6 @@ function generateTreeMapGames(games, element) {
     .attr('dy', 14)
     .text((d, i) =>
       {
-        console.log('hello');
         return d.data.name;
       });
 }
