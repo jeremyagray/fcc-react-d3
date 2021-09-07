@@ -155,6 +155,15 @@ function generateScatterChart(data, element) {
     .style('text-decoration', 'underline')
     .text('Tour de France Doping');
 
+  // Graph description.
+  svg.append('text')
+    .attr('id', 'description')
+    .attr('x', (width / 2))
+    .attr('y', 40)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .text('Alp de Huez Times (mm:ss)');
+
   // Tooltip.
   const tooltip = d3.select(element)
         .append('div')
