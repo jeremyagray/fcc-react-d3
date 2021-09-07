@@ -14,16 +14,6 @@ function HeatMap() {
   );
 }
 
-function HeatMapTitle() {
-  return (
-    <h2
-      id="title"
-    >
-      Monthly Average Temperature
-    </h2>
-  );
-}
-
 function HeatMapContainer() {
   return (
     <div className="HeatMapContainer">
@@ -37,7 +27,7 @@ function HeatMapSVG() {
   const ref = useRef();
 
   // Data state.
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({'baseTemperature': ''});
   const [loadingData, setLoadingData] = useState(true);
   const [loadingDataError, setLoadingDataError] = useState(null);
 
@@ -54,11 +44,8 @@ function HeatMapSVG() {
         if (isMounted) {
           setData(response.data);
           setLoadingData(false);
-          // console.log(data);
           console.log(`before: ${data.baseTemperature}`);
-          // console.log(data.monthlyVariance[0]);
           generateHeatMap(data, ref.current);
-          // console.log(`after: ${data.baseTemperature}`);
         }
       } catch (error) {
         if (isMounted) {
@@ -74,21 +61,30 @@ function HeatMapSVG() {
       isMounted = false;
     };
   }, [data.baseTemperature]);
-  return (
-    <div
-      ref={ref}
-    />
-  );
-}
 
-function HeatMapDescription() {
-  return (
-    <figcaption
-      id="description"
-    >
-      Monthly Global Land Temperature, 1753-2015
-    </figcaption>
-  );
+  if (loadingData) {
+    return (
+      <div>
+        <p>
+          Loading data...
+        </p>
+      </div>
+    );
+  } else if (loadingDataError) {
+    return (
+      <div>
+        <p>
+          Error loading data:  {loadingDataError}
+        </p>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        ref={ref}
+      />
+    );
+  }
 }
 
 export default HeatMap;
@@ -153,15 +149,6 @@ function generateHeatMap(data, element='div') {
         .range([graphPositions.left, graphPositions.right]);
 
   // Y scales.
-  const yMin = d3.min(series, (d) =>
-    {
-      return parseMonth(d.month);
-    });
-  const yMax = d3.max(series, (d) =>
-    {
-      return parseMonth(d.month);
-    });
-
   let yScaleDomain = [];
   for (let i = 0; i <= 11; i++)
   {
@@ -180,20 +167,11 @@ function generateHeatMap(data, element='div') {
   let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
   let getLegendScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
 
-  // SVG container and canvas.
-  const svgContainer = d3.select(element)
-        .append('div')
-        .attr('id', 'svgContainer')
-
-  console.log('here');
-
-  const svg = d3.select('div#svgContainer')
+  const svg = d3.select(element)
         .append("svg")
         .attr("id", "title")
         .attr("height", pallette.height)
         .attr("width", pallette.width);
-
-  console.log('two');
 
   // Graph title.
   svg.append("text")
@@ -245,19 +223,19 @@ function generateHeatMap(data, element='div') {
     left: legendPadding.left
   };
 
-  const legendRects = svg
-        .append('g')
-        .attr('id', 'legend')
-        .selectAll('rect.colorLegend')
-        .data(legendDomain)
-        .enter()
-        .append('rect')
-        .attr('class', 'colorLegend')
-        .attr('height', legendSquare)
-        .attr('width', legendSquare)
-        .attr('x', (d, i) => {return legendPositions.left + ((graphSize.width / 2) - 210) + legendSquare * (i + 1);})
-        .attr('y', pallette.height - 90)
-        .style('fill', (d, i) => {return getLegendScaleColor(d);});
+  svg
+    .append('g')
+    .attr('id', 'legend')
+    .selectAll('rect.colorLegend')
+    .data(legendDomain)
+    .enter()
+    .append('rect')
+    .attr('class', 'colorLegend')
+    .attr('height', legendSquare)
+    .attr('width', legendSquare)
+    .attr('x', (d, i) => {return legendPositions.left + ((graphSize.width / 2) - 210) + legendSquare * (i + 1);})
+    .attr('y', pallette.height - 90)
+    .style('fill', (d, i) => {return getLegendScaleColor(d);});
 
   const legendXAxis = d3
         .axisBottom(legendColorScale.range([legendPositions.left + legendSquare, legendPositions.right - legendSquare]))
