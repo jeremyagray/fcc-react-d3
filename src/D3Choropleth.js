@@ -192,7 +192,7 @@ function generateChoropleth(edu, geo, element) {
 
   // Visualization properties.
 
-  const graphSize = {height: 600, width: 1000};
+  const graphSize = {height: 800, width: 1000};
   const graphPadding = {top: 50, right: 50, bottom: 50, left: 50};
   const palletteSize = {height: graphSize.height + graphPadding.top + graphPadding.bottom, width: graphSize.width + graphPadding.left + graphPadding.right};
   const graphPositions = {top: graphPadding.top, right: palletteSize - graphPadding.right, bottom: palletteSize.height - graphPadding.bottom, left: graphPadding.left, hCenter: palletteSize.width / 2, vCenter: palletteSize.height / 2};
@@ -210,8 +210,8 @@ function generateChoropleth(edu, geo, element) {
   const getLegendScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
 
   // Map projection.
-  const projection = d3.geoAlbersUsa()
-        .translate([graphPositions.hCenter, graphPositions.vCenter]);
+  d3.geoAlbersUsa()
+    .translate([graphPositions.hCenter, graphPositions.vCenter]);
 
   // Path generator.
   const path = d3.geoPath()
@@ -245,7 +245,6 @@ function generateChoropleth(edu, geo, element) {
 
   // Legend.
   let legendDomain = [];
-  // let legendSteps = legendColorScale.domain()[1] - legendColorScale.domain()[0];
   let legendSteps = 10
   let legendStart = (2 * legendColorScale.domain()[0] + 1) / 2;
   for (let i = 0; i < legendSteps; i++)
@@ -259,46 +258,43 @@ function generateChoropleth(edu, geo, element) {
   const legendSize = {height: legendPallette.height + legendPadding.top + legendPadding.bottom, width: legendPallette.width + legendPadding.left + legendPadding.right};
   const legendPositions = {top: legendPadding.top, right: legendSize.width - legendPadding.right, bottom: legendSize.height - legendPadding.bottom, left: legendPadding.left};
 
-  const legendContainer = d3.select('body')
-	.append('div')
-	.attr('id', 'legend-container');
-
-  const legendDescriptionContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-description-container');
-
-  const legendDescription = d3.select('div#legend-description-container')
-        .html('<p>Earned Bachelor\'s (Percent)</p>');
-
-  const legendSvgContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-svg-container');
-
-  const legendSvg = d3.select('div#legend-svg-container')
-        .append('svg')
+  const legend = svg
+        .append('g')
         .attr('id', 'legend')
         .attr('height', legendSize.height)
         .attr('width', legendSize.width)
+        .attr('transform', `translate(600, 650)`);
 
-  const legendRects = legendSvg.selectAll('rect')
-        .data(legendDomain)
-        .enter()
-        .append('rect')
-        .attr('class', 'colorLegend')
-        .attr('height', legendSquare)
-        .attr('width', legendSquare)
-        .attr('x', (d, i) => {return legendPositions.left + legendSquare * (i + 1);})
-        .attr('y', legendPositions.bottom - legendSquare)
-        .style('fill', (d, i) => {return getLegendScaleColor(d);});
+  legend
+    .selectAll('rect')
+    .data(legendDomain)
+    .enter()
+    .append('rect')
+    .attr('class', 'colorLegend')
+    .attr('height', legendSquare)
+    .attr('width', legendSquare)
+    .attr('x', (d, i) => {return legendPositions.left + legendSquare * (i + 1);})
+    .attr('y', legendPositions.bottom - legendSquare)
+    .style('fill', (d, i) => {return getLegendScaleColor(d);});
 
   const legendXAxis = d3.axisBottom(legendColorScale.range([legendPositions.left + legendSquare, legendPositions.right - legendSquare]))
 	.ticks(legendSteps)
         .tickFormat((t) => {return t * 10;});
 
-  legendSvg.append("g")
+  legend
+    .append("g")
     .attr("id", "legend-x-axis")
-    .attr("transform", "translate(0, " + (legendPositions.bottom) + ")")
+    .attr("transform", `translate(0, 60)`)
     .call(legendXAxis);
+
+  // Legend description.
+  legend.append('text')
+    .attr('id', 'description')
+    .attr('x', (legendSize.width / 2))
+    .attr('y', 90)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .text('Earned Bachelor\'s (Percent)');
 
   const tooltip = d3.select(element)
         .append('div')
