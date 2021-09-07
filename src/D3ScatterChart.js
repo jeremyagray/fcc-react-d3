@@ -168,8 +168,8 @@ function generateScatterChart(data, element) {
   const tooltip = d3.select(element)
         .append('div')
         .attr('id', 'tooltip')
-        .attr('data-year', '')
         .attr('data-xvalue', '')
+        .attr('data-yvalue', '')
         .style('opacity', '0')
         .style('display', 'none')
         .style('visibility', 'hidden');
@@ -218,26 +218,26 @@ function generateScatterChart(data, element) {
       })
     .on('mouseenter mouseover', (event, datum) =>
       {
-        // const tooltip = d3.select('div#tooltip')
         tooltip
           .attr('id', 'tooltip')
-          .style('display', 'block')
+          .style('display', 'inline')
+          .style('position', 'absolute')
           .style('visibility', 'visible')
           .style('opacity', '0.75')
+          .style('left', (event.pageX + 20) + 'px')
+          .style('top', (event.pageY + 20) + 'px')
           .attr('data-year', parseYear(datum.Year))
           .attr('data-time', parseTimes(datum.Time))
           .html(`<p>${datum.Name}, ${datum.Time} (${datum.Year})</p>`);
       })
     .on('mousemove', (event, datum) =>
       {
-        // const tooltip = d3.select('div#tooltip')
         tooltip
           .style('left', (event.pageX + 20) + 'px')
           .style('top', (event.pageY + 20) + 'px');
       })
     .on('mouseout mouseleave', (event, datum) =>
       {
-        // d3.select('div#tooltip')
         tooltip
           .style('opacity', '0')
           .style('display', 'none')
