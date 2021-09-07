@@ -107,8 +107,6 @@ function generateScatterChart(data, element) {
   const padding = 50;
 
   // Dimensions of graph.
-  const barWidth = 4;
-  // const width = (2 * padding) + (data.length * barWidth);
   const width = 900;
   const height = Math.floor(width * 2 / 3);
   const radius = 2
@@ -139,6 +137,24 @@ function generateScatterChart(data, element) {
         .domain([yMax, yMin])
         .range([height - padding, padding]);
 
+  // Visualization SVG.
+  const svg = d3.select(element)
+        .append("svg")
+        .attr("id", "scatterChartSVG")
+        .attr("width", width)
+        .attr("height", height)
+        .style('background-color', '#ccccdf');
+
+  // Visualization title.
+  svg.append('text')
+    .attr('id', 'title')
+    .attr('x', (width / 2))
+    .attr('y', 20)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '24px')
+    .style('text-decoration', 'underline')
+    .text('Tour de France Doping');
+
   // Tooltip.
   const tooltip = d3.select(element)
         .append('div')
@@ -164,14 +180,6 @@ function generateScatterChart(data, element) {
         .style('position', 'absolute')
         .html('<ul><li>suspected doping</li><li>presumed clean</li></ul>');
 
-  // SVG canvas.
-  const svg = d3.select(element)
-        .append("svg")
-        .attr("id", "title")
-        .attr("width", width)
-        .attr("height", height)
-        .style('background-color', '#ccccdf');
-  
   svg.selectAll('circle')
     .data(data)
     .enter()
