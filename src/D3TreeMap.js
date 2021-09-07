@@ -96,15 +96,42 @@ function generateTreeMapGames(games, element) {
   // Video games sales.
   // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json
 
-  // Visualization properties.
+  // Visualization dimensions.
+  const palletteDimensions = {
+    'height': 1100,
+    'width': 1200
+  };
 
-  const graphSize = {height: 600, width: 1000};
-  const graphPadding = {top: 0, right: 0, bottom: 0, left: 0};
-  const palletteSize = {height: graphSize.height + graphPadding.top + graphPadding.bottom, width: graphSize.width + graphPadding.left + graphPadding.right};
-  const graphPositions = {top: graphPadding.top, right: palletteSize - graphPadding.right, bottom: palletteSize.height - graphPadding.bottom, left: graphPadding.left, hCenter: palletteSize.width / 2, vCenter: palletteSize.height / 2};
+  const padding = {
+    'top': 50,
+    'right': 50,
+    'bottom': 350,
+    'left': 50
+  };
 
-  // Dimensions of tooltip.
-  const tooltipSize = {height: 50, width: 200};
+  const graphDimensions = {
+    // Overall.
+    'height': palletteDimensions.height - padding.top - padding.bottom,
+    'width': palletteDimensions.width - padding.right - padding.left,
+
+    // Side positions.
+    'top': padding.top,
+    'right': palletteDimensions.width - padding.right,
+    'bottom': palletteDimensions.height - padding.bottom,
+    'left': padding.left
+  };
+
+  const legendDimensions = {
+    'height': 150,
+    'width': 250,
+    'top': 100,
+    'left': 900
+  };
+
+  const tooltipDimensions = {
+    height: 50,
+    width: 200
+  };
 
   // Hierarchy and treemap.
   const root = d3.hierarchy(games);
@@ -114,7 +141,7 @@ function generateTreeMapGames(games, element) {
     });
 
   const treemap = d3.treemap()
-        .size([graphSize.width, graphSize.height])
+        .size([graphDimensions.width, graphDimensions.height])
         .paddingOuter(0)
         .paddingInner(1)
         .tile(d3.treemapSquarify);
@@ -154,14 +181,14 @@ function generateTreeMapGames(games, element) {
   const svg = d3.select(element)
         .append("svg")
         .attr("id", "title")
-        .attr("height", palletteSize.height)
-        .attr("width", palletteSize.width)
+        .attr("height", palletteDimensions.height)
+        .attr("width", palletteDimensions.width)
         .style('background-color', '#ffffff')
 
   // Graph title.
   svg.append('text')
     .attr('id', 'title')
-    .attr('x', (graphSize.width / 2))
+    .attr('x', (palletteDimensions.width / 2))
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '24px')
@@ -171,7 +198,7 @@ function generateTreeMapGames(games, element) {
   // Graph description.
   svg.append('text')
     .attr('id', 'description')
-    .attr('x', (graphSize.width / 2))
+    .attr('x', (palletteDimensions.width / 2))
     .attr('y', 40)
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
@@ -247,7 +274,6 @@ function generateTreeMapGames(games, element) {
       })
     .text((d, i) =>
       {
-        console.log(d);
         return d.data.name;
       });
 
@@ -264,12 +290,17 @@ function generateTreeMapGames(games, element) {
         .append('div')
         .attr('id', 'tooltip')
         .attr('data-value', '')
-        .style('height', tooltipSize.height)
-        .style('width', tooltipSize.width)
+        .style('height', tooltipDimensions.height)
+        .style('width', tooltipDimensions.width)
         .style('opacity', '0')
         .style('visibility', 'visible');
 
-  svg
+  const treemapTiles = svg
+        .append('g')
+        .attr('id', 'treemapTiles')
+        .attr('transform', `translate(${graphDimensions.left}, ${graphDimensions.top})`);
+
+  treemapTiles
     .selectAll('rect')
     .data(root.leaves())
     .enter()
@@ -325,20 +356,23 @@ function generateTreeMapGames(games, element) {
           .style('visibility', 'hidden');
       });
 
-  let labels = svg.selectAll('g')
-      .data(root.leaves())
-      .enter()
-      .append('g')
-      .attr('transform', (d, i) =>
-        {
-          return 'translate(' + [d.x0, d.y0] + ')';
-        });
+  const treemapTileLabels = svg
+        .append('g')
+        .attr('id', 'treemapTileLabels')
+        .attr('transform', `translate(${graphDimensions.left}, ${graphDimensions.top})`);
 
-  labels.append('text')
+  treemapTileLabels
+    .selectAll('text')
+    .data(root.leaves())
+    .enter()
+    .append('text')
+    .attr('x', (d, i) => {return d.x0})
+    .attr('y', (d, i) => {return d.y0})
     .attr('dx', 4)
     .attr('dy', 14)
     .text((d, i) =>
       {
+        console.log('hello');
         return d.data.name;
       });
 }
