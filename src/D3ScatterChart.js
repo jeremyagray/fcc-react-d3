@@ -103,12 +103,31 @@ function generateScatterChart(data, element) {
   const parseYear = d3.timeParse('%Y');
   const parseTimes = d3.timeParse('%M:%S');
 
-  // Padding.
-  const padding = 50;
+  // Visualization dimensions.
+  const palletteDimensions = {
+    'height': 800,
+    'width': 1200
+  };
 
-  // Dimensions of graph.
-  const width = 900;
-  const height = Math.floor(width * 2 / 3);
+  const padding = {
+    'top': 50,
+    'right': 50,
+    'bottom': 80,
+    'left': 80
+  };
+
+  const graphDimensions = {
+    // Overall.
+    'height': palletteDimensions.height - padding.top - padding.bottom,
+    'width': palletteDimensions.width - padding.right - padding.left,
+
+    // Side positions.
+    'top': padding.top,
+    'right': palletteDimensions.width - padding.right,
+    'bottom': palletteDimensions.height - padding.bottom,
+    'left': padding.left
+  };
+
   const radius = 5;
   
   // Scales.
@@ -124,7 +143,7 @@ function generateScatterChart(data, element) {
     });
   const xScale = d3.scaleTime()
         .domain([xMin, xMax])
-        .range([padding, width - padding]);
+        .range([graphDimensions.left, graphDimensions.right]);
   const yMin = d3.min(data, (d) =>
     {
       return parseTimes(d.Time);
@@ -135,20 +154,20 @@ function generateScatterChart(data, element) {
     });
   const yScale = d3.scaleTime()
         .domain([yMax, yMin])
-        .range([height - padding, padding]);
+        .range([graphDimensions.bottom, graphDimensions.top]);
 
   // Visualization SVG.
   const svg = d3.select(element)
-        .append("svg")
-        .attr("id", "scatterChartSVG")
-        .attr("width", width)
-        .attr("height", height)
+        .append('svg')
+        .attr('id', 'scatterChartSVG')
+        .attr('width', palletteDimensions.width)
+        .attr('height', palletteDimensions.height)
         .style('background-color', '#ccccdf');
 
   // Visualization title.
   svg.append('text')
     .attr('id', 'title')
-    .attr('x', (width / 2))
+    .attr('x', (palletteDimensions.width / 2))
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '24px')
@@ -158,7 +177,7 @@ function generateScatterChart(data, element) {
   // Graph description.
   svg.append('text')
     .attr('id', 'description')
-    .attr('x', (width / 2))
+    .attr('x', (palletteDimensions.width / 2))
     .attr('y', 40)
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
@@ -251,13 +270,13 @@ function generateScatterChart(data, element) {
   const yAxis = d3.axisLeft(yScale)
         .tickFormat(d3.timeFormat('%M:%S'));
 
-  svg.append("g")
-    .attr("id", "x-axis")
-    .attr("transform", "translate(0, " + (height - padding) + ")")
+  svg.append('g')
+    .attr('id', 'x-axis')
+    .attr('transform', `translate(0, ${graphDimensions.bottom})`)
     .call(xAxis);
 
-  svg.append("g")
-    .attr("id", "y-axis")
-    .attr("transform", "translate(" + padding + ")")
+  svg.append('g')
+    .attr('id', 'y-axis')
+    .attr('transform', `translate(${graphDimensions.left}, 0)`)
     .call(yAxis);
 }
