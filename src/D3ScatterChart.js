@@ -109,7 +109,7 @@ function generateScatterChart(data, element) {
   // Dimensions of graph.
   const width = 900;
   const height = Math.floor(width * 2 / 3);
-  const radius = 2
+  const radius = 5;
   
   // Scales.
   const xMin = d3.min(data, (d) => 
@@ -207,7 +207,7 @@ function generateScatterChart(data, element) {
           return '#006666';
         }
       })
-    .attr('r', '5')
+    .attr('r', radius)
     .attr('cx', (d, i) =>
       {
         return xScale(parseYear(d.Year));
