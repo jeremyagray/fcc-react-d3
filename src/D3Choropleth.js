@@ -219,10 +219,20 @@ function generateChoropleth(edu, geo, element) {
   // Visualization SVG.
   const svg = d3.select(element)
         .append("svg")
-        .attr("id", "title")
+        .attr("id", "choropleth")
         .attr("height", palletteSize.height)
         .attr("width", palletteSize.width)
         .style('background-color', '#ffffff')
+
+  // Graph description.
+  svg.append('text')
+    .attr('id', 'title')
+    .attr('x', (graphSize.width / 2))
+    .attr('y', 20)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '24px')
+    .style('text-decoration', 'underline')
+    .text('US Education Levels');
 
   // Graph description.
   svg.append('text')
