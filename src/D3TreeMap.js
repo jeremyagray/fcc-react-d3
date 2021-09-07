@@ -99,7 +99,6 @@ function generateTreeMapGames(games, element) {
   // Visualization properties.
 
   const graphSize = {height: 600, width: 1000};
-  // const graphPadding = {top: 50, right: 50, bottom: 50, left: 50};
   const graphPadding = {top: 0, right: 0, bottom: 0, left: 0};
   const palletteSize = {height: graphSize.height + graphPadding.top + graphPadding.bottom, width: graphSize.width + graphPadding.left + graphPadding.right};
   const graphPositions = {top: graphPadding.top, right: palletteSize - graphPadding.right, bottom: palletteSize.height - graphPadding.bottom, left: graphPadding.left, hCenter: palletteSize.width / 2, vCenter: palletteSize.height / 2};
@@ -151,28 +150,22 @@ function generateTreeMapGames(games, element) {
   // let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
   let getLegendScaleColor = legendColorScale.interpolator(d3.interpolateBlues);
 
-  // Description container and description.
-  const descriptionContainer = d3.select('body')
-        .append('div')
-        .attr('id', 'description-container')
-
-  const description = d3.select('div#description-container')
-        .append('div')
-        .attr('id', 'description')
-        .html('<p>Video Game Sales</p>');
-
-  // SVG container and canvas.
-  // const svgContainer = d3.select('body')
-  //       .append('div')
-  //       .attr('id', 'svg-container');
-
-  // const svg = d3.select("div#svg-container")
+  // Visualization SVG.
   const svg = d3.select(element)
         .append("svg")
         .attr("id", "title")
         .attr("height", palletteSize.height)
         .attr("width", palletteSize.width)
         .style('background-color', '#ffffff')
+
+  // Graph description.
+  svg.append('text')
+    .attr('id', 'description')
+    .attr('x', (graphSize.width / 2))
+    .attr('y', 40)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .text('Video Game Sales');
 
   // Legend.
   let legendDomain = [];
