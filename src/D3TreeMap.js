@@ -158,6 +158,16 @@ function generateTreeMapGames(games, element) {
         .attr("width", palletteSize.width)
         .style('background-color', '#ffffff')
 
+  // Graph title.
+  svg.append('text')
+    .attr('id', 'title')
+    .attr('x', (graphSize.width / 2))
+    .attr('y', 20)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '24px')
+    .style('text-decoration', 'underline')
+    .text('Top 100 Best Selling Video Game');
+
   // Graph description.
   svg.append('text')
     .attr('id', 'description')
@@ -165,7 +175,7 @@ function generateTreeMapGames(games, element) {
     .attr('y', 40)
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
-    .text('Video Game Sales');
+    .text('Video Game Sales (millions) by Console');
 
   // Legend.
   let legendDomain = [];
