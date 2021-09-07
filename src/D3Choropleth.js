@@ -202,42 +202,36 @@ function generateChoropleth(edu, geo, element) {
     width: 200
   };
 
-  // Color scale.
-  let graphColorScale = d3.scaleSequential()
-      .domain([0, 10]);
-  let legendColorScale = d3.scaleSequential()
-      .domain([0, 10]);
-  // let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
-  // let getLegendScaleColor = graphColorScale.interpolator(d3.interpolateYlOrRd);
-  let getGraphScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
-  let getLegendScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
-  // console.log(getGraphScaleColor(65));
+  // Color scales.
+  const graphColorScale = d3.scaleSequential().domain([0, 10]);
+  const getGraphScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
+
+  const legendColorScale = d3.scaleSequential().domain([0, 10]);
+  const getLegendScaleColor = graphColorScale.interpolator(d3.interpolateBlues);
 
   // Map projection.
   const projection = d3.geoAlbersUsa()
         .translate([graphPositions.hCenter, graphPositions.vCenter]);
-  // .scale([]);
 
   // Path generator.
   const path = d3.geoPath()
-  // .projection(projection);
 
-  // Description container and description.
-  const descriptionContainer = d3.select('body')
-        .append('div')
-        .attr('id', 'description-container')
-
-  const description = d3.select('div#description-container')
-        .append('div')
-        .attr('id', 'description')
-        .html('<p>US Education Levels</p>');
-
+  // Visualization SVG.
   const svg = d3.select(element)
         .append("svg")
         .attr("id", "title")
         .attr("height", palletteSize.height)
         .attr("width", palletteSize.width)
         .style('background-color', '#ffffff')
+
+  // Graph description.
+  svg.append('text')
+    .attr('id', 'description')
+    .attr('x', (graphSize.width / 2))
+    .attr('y', 40)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '16px')
+    .text('College Education Percentage by County');
 
   // Legend.
   let legendDomain = [];
