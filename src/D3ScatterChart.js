@@ -128,6 +128,13 @@ function generateScatterChart(data, element) {
     'left': padding.left
   };
 
+  const legendDimensions = {
+    'height': 150,
+    'width': 250,
+    'top': 100,
+    'left': 900
+  };
+
   const radius = 5;
   
   // Scales.
@@ -194,19 +201,44 @@ function generateScatterChart(data, element) {
         .style('visibility', 'hidden');
   
   // Legend.
-  const legend = d3.select(element)
-        .append('div')
+  const legend = svg
+        .append('g')
         .attr('id', 'legend')
-        .style('border', '2px solid #00000')
-        .style('top', '200px')
-        .style('left', '900px')
-        .style('opacity', '0.8')
-        .style('visibility', 'visible')
-        .style('width', '250px')
-        .style('height', '150px')
-        .style('background-color', '#ccccff')
-        .style('position', 'absolute')
-        .html('<ul><li>suspected doping</li><li>presumed clean</li></ul>');
+        .attr('width', legendDimensions.width)
+        .attr('height', legendDimensions.height)
+        .attr('transform', `translate(${legendDimensions.left}, ${legendDimensions.top})`);
+
+  legend
+    .append('circle')
+    .attr('class', 'legendDot')
+    .attr('fill', '#666600')
+    .attr('r', radius)
+    .attr('cx', 30)
+    .attr('cy', 15);
+
+  legend
+    .append('circle')
+    .attr('class', 'legendDot')
+    .attr('fill', '#006666')
+    .attr('r', radius)
+    .attr('cx', 30)
+    .attr('cy', 35);
+
+  legend
+    .append('text')
+    .attr('x', 60)
+    .attr('y', 20)
+    .attr('text-anchor', 'left')
+    .style('font-size', '16px')
+    .text('suspected doping');
+
+  legend
+    .append('text')
+    .attr('x', 60)
+    .attr('y', 40)
+    .attr('text-anchor', 'left')
+    .style('font-size', '16px')
+    .text('presumed clean');
 
   svg.selectAll('circle')
     .data(data)
