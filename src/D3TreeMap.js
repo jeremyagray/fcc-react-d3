@@ -123,14 +123,14 @@ function generateTreeMapGames(games, element) {
 
   const catMax = d3.max(root, (d) =>
     {
-      if (d.depth == 1)
+      if (d.depth === 1)
       {
         return d.value;
       }
     });
   const catMin = d3.min(root, (d) =>
     {
-      if (d.depth == 1)
+      if (d.depth === 1)
       {
         return d.value;
       }
@@ -152,15 +152,6 @@ function generateTreeMapGames(games, element) {
   let getLegendScaleColor = legendColorScale.interpolator(d3.interpolateBlues);
 
   // Description container and description.
-  const navigationContainer = d3.select('body')
-        .append('div')
-        .attr('id', 'navigation-container')
-
-  const navigation = d3.select('div#navigation-container')
-        .append('div')
-        .attr('id', 'navigation')
-        .html('<ul><li>Kickstarter Pledges<\/li><li>Movie Sales<\/li><li>Video Game Sales<\/li><\/ul>');
-
   const descriptionContainer = d3.select('body')
         .append('div')
         .attr('id', 'description-container')
@@ -168,7 +159,7 @@ function generateTreeMapGames(games, element) {
   const description = d3.select('div#description-container')
         .append('div')
         .attr('id', 'description')
-        .html('<p>Video Game Sales<\/p>');
+        .html('<p>Video Game Sales</p>');
 
   // SVG container and canvas.
   // const svgContainer = d3.select('body')
@@ -315,7 +306,7 @@ function generateTreeMapGames(games, element) {
           .style('top', (event.pageY + 20) + 'px')
           .attr('data-value', datum.value)
           .style('background', getGraphScaleColor(datum.parent.data.name))
-          .html('<p>' + datum.data.name + ' (' + datum.data.category + '):  ' + datum.value + '<\/p>');
+          .html('<p>' + datum.data.name + ' (' + datum.data.category + '):  ' + datum.value + '</p>');
       })
     .on('mousemove', (event, datum) =>
       {
