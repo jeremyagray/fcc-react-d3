@@ -96,64 +96,59 @@ function ChoroplethSVG() {
 export default Choropleth;
 
 function generateChoropleth(edu, geo, element) {
-  function getStateName(code)
-  {
-    const states = {
-      'AK': 'Alaska',
-      'AL': 'Alabama',
-      'AR': 'Arkansas',
-      'AZ': 'Arizona',
-      'CA': 'California',
-      'CO': 'Colorado',
-      'CT': 'Connecticut',
-      'DC': 'Washington, DC',
-      'DE': 'Delaware',
-      'FL': 'Florida',
-      'GA': 'Georgia',
-      'HI': 'Hawaii',
-      'IA': 'Iowa',
-      'ID': 'Idaho',
-      'IL': 'Illinois',
-      'IN': 'Indiana',
-      'KS': 'Kansas',
-      'KY': 'Kentucky',
-      'LA': 'Louisiana',
-      'MA': 'Massachusetts',
-      'MD': 'Maryland',
-      'ME': 'Maine',
-      'MI': 'Michigan',
-      'MN': 'Minnesota',
-      'MO': 'Missouri',
-      'MS': 'Mississippi',
-      'MT': 'Montana',
-      'NC': 'North Carolina',
-      'ND': 'North Dakota',
-      'NE': 'Nebraska',
-      'NH': 'New Hampshire',
-      'NJ': 'New Jersey',
-      'NM': 'New Mexico',
-      'NV': 'Nevada',
-      'NY': 'New York',
-      'OH': 'Ohio',
-      'OK': 'Oklahoma',
-      'OR': 'Oregon',
-      'PA': 'Pennsylvania',
-      'RI': 'Rhode Island',
-      'SC': 'South Carolina',
-      'SD': 'South Dakota',
-      'TN': 'Tennessee',
-      'TX': 'Texas',
-      'UT': 'Utah',
-      'VA': 'Virginia',
-      'VT': 'Vermont',
-      'WA': 'Washington',
-      'WI': 'Wisconsin',
-      'WV': 'West Virginia',
-      'WY': 'Wyoming'
-    }
-
-    return states[code];
-  }
+  const states = {
+    'AK': 'Alaska',
+    'AL': 'Alabama',
+    'AR': 'Arkansas',
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DC': 'Washington, DC',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'IA': 'Iowa',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'MA': 'Massachusetts',
+    'MD': 'Maryland',
+    'ME': 'Maine',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MO': 'Missouri',
+    'MS': 'Mississippi',
+    'MT': 'Montana',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'NE': 'Nebraska',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NV': 'Nevada',
+    'NY': 'New York',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VA': 'Virginia',
+    'VT': 'Vermont',
+    'WA': 'Washington',
+    'WI': 'Wisconsin',
+    'WV': 'West Virginia',
+    'WY': 'Wyoming'
+  };
   
   // Data massage.
   // This builds a good data structure, but d3.geoPath() expects the geojson data as items in the .data() argument array.
@@ -176,7 +171,7 @@ function generateChoropleth(edu, geo, element) {
     // Filter the education data to find the correct county.
     let counties = edu.filter((item) =>
       {
-        if (item.fips == json.features[i].id)
+        if (item.fips === json.features[i].id)
         {
           return item;
         }
@@ -190,7 +185,7 @@ function generateChoropleth(edu, geo, element) {
     // corresponding county object in the geoJSON feature
     // array.
     json.features[i].properties.postal_code = county.state || '';
-    json.features[i].properties.state = getStateName(county.state) || '';
+    json.features[i].properties.state = states[county.state] || '';
     json.features[i].properties.name = county.area_name || '';
     json.features[i].properties.percent = county.bachelorsOrHigher;
   }
@@ -202,8 +197,10 @@ function generateChoropleth(edu, geo, element) {
   const palletteSize = {height: graphSize.height + graphPadding.top + graphPadding.bottom, width: graphSize.width + graphPadding.left + graphPadding.right};
   const graphPositions = {top: graphPadding.top, right: palletteSize - graphPadding.right, bottom: palletteSize.height - graphPadding.bottom, left: graphPadding.left, hCenter: palletteSize.width / 2, vCenter: palletteSize.height / 2};
 
-  // Dimensions of tooltip.
-  const tooltipSize = {height: 50, width: 200};
+  const tooltipSize = {
+    height: 50,
+    width: 200
+  };
 
   // Color scale.
   let graphColorScale = d3.scaleSequential()
@@ -233,14 +230,8 @@ function generateChoropleth(edu, geo, element) {
   const description = d3.select('div#description-container')
         .append('div')
         .attr('id', 'description')
-        .html('<p>US Education Levels<\/p>');
+        .html('<p>US Education Levels</p>');
 
-  // SVG container and canvas.
-  // const svgContainer = d3.select('body')
-  //       .append('div')
-  //       .attr('id', 'svg-container');
-
-  // const svg = d3.select("div#svg-container")
   const svg = d3.select(element)
         .append("svg")
         .attr("id", "title")
@@ -273,7 +264,7 @@ function generateChoropleth(edu, geo, element) {
 	.attr('id', 'legend-description-container');
 
   const legendDescription = d3.select('div#legend-description-container')
-        .html('<p>Earned Bachelor\'s (Percent)<\/p>');
+        .html('<p>Earned Bachelor\'s (Percent)</p>');
 
   const legendSvgContainer = d3.select('div#legend-container')
 	.append('div')
@@ -305,19 +296,14 @@ function generateChoropleth(edu, geo, element) {
     .attr("transform", "translate(0, " + (legendPositions.bottom) + ")")
     .call(legendXAxis);
 
-  // Tooltip.
-  const legendTooltipContainer = d3.select('div#legend-container')
-	.append('div')
-	.attr('id', 'legend-tooltip-container');
-
-  const legendTooltip = d3.select('div#legend-tooltip-container')
+  const tooltip = d3.select(element)
         .append('div')
         .attr('id', 'tooltip')
         .attr('data-education', '')
         .style('height', tooltipSize.height)
         .style('width', tooltipSize.width)
         .style('opacity', '0')
-        .style('visibility', 'visible');
+        .style('visibility', 'hidden');
 
   svg.append('g')
     .attr('transform', 'translate(' + graphPositions.top + ', ' + graphPositions.left + ')')
@@ -357,27 +343,30 @@ function generateChoropleth(edu, geo, element) {
       {
         return path(d);
       })
-  // D3 v6 mouse events.
     .on('mouseenter mouseover', (event, datum) =>
       {
-        const tooltip = d3.select('div#tooltip')
-              .attr('id', 'tooltip')
-              .style('display', 'flex')
-              .style('visibility', 'visible')
-              .style('opacity', '0.50')
-              .attr('data-education', datum.properties.percent)
-              .html('<p>' + datum.properties.name + ', ' + datum.properties.state + ':  ' + datum.properties.percent + '%<\/p>');
-        // .html((d) =>
-        //       {
-        //         d3.select('div#tooltip')
-        //           .style('background-color', getGraphScaleColor(d.properties.education));
-        //         return '<p>' + d.properties.name + ', ' + d.properties.state + ':  ' + d.properties.percent + '%<\/p>';
-        //       });
-        // tooltip.style('background-color', getGraphScaleColor(datum.properties.education));
+        tooltip
+          .attr('id', 'tooltip')
+          .style('display', 'inline')
+          .style('position', 'absolute')
+          .style('visibility', 'visible')
+          .style('opacity', '0.50')
+          .style('left', (event.pageX + 20) + 'px')
+          .style('top', (event.pageY + 20) + 'px')
+          .style('background-color',
+                 getGraphScaleColor(datum.properties.percent / 10))
+          .attr('data-education', datum.properties.percent)
+          .html(`<p>${datum.properties.name}, ${datum.properties.state}:  ${datum.properties.percent}%</p>`);
+      })
+    .on('mousemove', (event, datum) =>
+      {
+        tooltip
+          .style('left', (event.pageX + 20) + 'px')
+          .style('top', (event.pageY + 20) + 'px');
       })
     .on('mouseout mouseleave', (event, datum) =>
       {
-        d3.select('div#tooltip')
+        tooltip
           .style('opacity', '0')
           .style('display', 'none')
           .style('visibility', 'hidden');
