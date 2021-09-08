@@ -59,6 +59,7 @@ function ScatterChartSVG() {
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scatterData[0]['Seconds']]);
 
   if (loadingScatterData) {

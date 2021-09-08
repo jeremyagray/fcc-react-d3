@@ -66,6 +66,7 @@ function ChoroplethSVG() {
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [educationData[0]['fips'], geoData['type']]);
 
   if (loadingData) {
