@@ -150,7 +150,7 @@ function generateTreeMapGames(games, element) {
   const treemap = d3.treemap()
         .size([graphDimensions.width, graphDimensions.height])
         .paddingOuter(0)
-        .paddingInner(1)
+        .paddingInner(0)
         .tile(d3.treemapSquarify);
   treemap(root);
 
