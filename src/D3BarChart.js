@@ -27,7 +27,7 @@ function BarChartSVG() {
   const ref = useRef();
 
   // Data state.
-  const [data, setData] = useState({});
+  const [data, setData] = useState({'id': ''});
   const [loadingData, setLoadingData] = useState(true);
   const [loadingDataError, setLoadingDataError] = useState(null);
 
@@ -106,28 +106,41 @@ function generateBarChart(raw, element) {
   const parseTime = d3.timeParse("%Y-%m-%d");
   for (let i = 0; i < raw['data'].length; i++)
   {
-    let dateObj = parseTime(raw.data[i][0]);
     data.push({
       'date': raw.data[i][0],
       'gdp': raw.data[i][1],
-      'dateObj': dateObj
+      'dateObj': parseTime(raw.data[i][0])
     });
   }
   
-  // Padding.
-  const padding = {
-    top: 50,
-    right: 50,
-    bottom: 80,
-    left: 80,
+  // Visualization dimensions.
+  const palletteDimensions = {
+    'height': 800,
+    'width': 1200
   };
 
-  // Dimensions of graph.
-  const barWidth = 4;
-  const width = padding.left + (data.length * barWidth) + padding.right;
-  const height = Math.floor(width * 2 / 3);
+  const padding = {
+    'top': 50,
+    'right': 50,
+    'bottom': 80,
+    'left': 80
+  };
+
+  const graphDimensions = {
+    // Overall.
+    'height': palletteDimensions.height - padding.top - padding.bottom,
+    'width': palletteDimensions.width - padding.right - padding.left,
+
+    // Side positions.
+    'top': padding.top,
+    'right': palletteDimensions.width - padding.right,
+    'bottom': palletteDimensions.height - padding.bottom,
+    'left': padding.left
+  };
+
+  const barWidth = graphDimensions.width / data.length;
   const gdpMax = d3.max(data, (d) => d.gdp);
-  const maxBarHeight = height - (padding.top + padding.bottom);
+  const maxBarHeight = palletteDimensions.height - (padding.top + padding.bottom);
 
   // Tooltip.
   const tooltip = d3.select(element)
@@ -141,8 +154,8 @@ function generateBarChart(raw, element) {
   const svg = d3.select(element)
 	.append("svg")
 	.attr("id", "canvas")
-	.attr("width", width)
-	.attr("height", height);
+	.attr("width", palletteDimensions.width)
+	.attr("height", palletteDimensions.height);
   
   // Bars.
   svg.selectAll('rect')
@@ -159,7 +172,7 @@ function generateBarChart(raw, element) {
       })
     .attr('y', (d, i) =>
       {
-        return ((height - padding.bottom) - ((d.gdp / gdpMax) * maxBarHeight));
+        return ((graphDimensions.bottom) - ((d.gdp / gdpMax) * maxBarHeight));
       })
     .attr('width', barWidth)
     .attr('height', (d, i) =>
@@ -204,27 +217,27 @@ function generateBarChart(raw, element) {
 
   const xScale = d3.scaleTime()
         .domain([dateMin, dateMax])
-        .range([padding.left, width - padding.right]);
+        .range([graphDimensions.left, graphDimensions.right]);
   const yScale = d3.scaleLinear()
         .domain([0, gdpMax])
-        .range([height - padding.bottom, padding.top]);
+        .range([graphDimensions.bottom, graphDimensions.top]);
 
   const xAxis = d3.axisBottom(xScale);
   const yAxis = d3.axisLeft(yScale);
 
   svg.append("g")
     .attr("id", "x-axis")
-    .attr("transform", `translate(0, ${height - padding.bottom})`)
+    .attr("transform", `translate(0, ${graphDimensions.bottom})`)
     .call(xAxis);
 
   svg.append("g")
     .attr("id", "y-axis")
-    .attr("transform", `translate(${padding.left})`)
+    .attr("transform", `translate(${graphDimensions.left})`)
     .call(yAxis);
   
   svg.append('text')
     .attr('id', 'title')
-    .attr('x', width / 2)
+    .attr('x', palletteDimensions.width / 2)
     .attr('y', 30)
     .attr('text-anchor', 'middle')
     .style('font-size', '2em')
@@ -232,16 +245,16 @@ function generateBarChart(raw, element) {
 
   svg.append('text')
     .attr('id', 'x-axis-label')
-    .attr('x', width / 2)
-    .attr('y', height - 20)
+    .attr('x', palletteDimensions.width / 2)
+    .attr('y', palletteDimensions.height - 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '1.5em')
     .text('Quarter');
 
-  const xCoord = 20
-  const yCoord = height / 2
-  const xCoordPreRot = -yCoord
-  const yCoordPreRot = xCoord
+  const xCoord = 20;
+  const yCoord = palletteDimensions.height / 2;
+  const xCoordPreRot = -yCoord;
+  const yCoordPreRot = xCoord;
 
   svg.append('text')
     .attr('id', 'y-axis-label')
