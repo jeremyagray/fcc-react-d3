@@ -172,14 +172,11 @@ function generateChoropleth(edu, geo, element) {
     // Filter the education data to find the correct county.
     let counties = edu.filter((item) =>
       {
-        if (item.fips === json.features[i].id)
-        {
-          return item;
-        }
+        return item.fips === json.features[i].id;
       });
     if (counties.length > 1)
     {
-      throw `There is more than one entry in the education data for county ${json.features[i].id}.`;
+      throw new Error(`There is more than one entry in the education data for county ${json.features[i].id}.`);
     }
     let county = counties[0];
     // Assign the county data to the properties object of the
