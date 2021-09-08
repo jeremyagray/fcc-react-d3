@@ -9,14 +9,6 @@ import * as d3 from 'd3';
 function HeatMap() {
   return (
     <div className="HeatMap">
-      <HeatMapContainer />
-    </div>
-  );
-}
-
-function HeatMapContainer() {
-  return (
-    <div className="HeatMapContainer">
       <HeatMapSVG />
     </div>
   );
@@ -40,11 +32,9 @@ function HeatMapSVG() {
     async function fetchData() {
       try {
         const response = await axios.get(dataURL);
-        console.log(response);
         if (isMounted) {
           setData(response.data);
           setLoadingData(false);
-          console.log(`before: ${data.baseTemperature}`);
           generateHeatMap(data, ref.current);
         }
       } catch (error) {

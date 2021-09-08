@@ -9,14 +9,6 @@ import * as d3 from 'd3';
 function TreeMapGames() {
   return (
     <div className="TreeMapGames">
-      <TreeMapGamesContainer />
-    </div>
-  );
-}
-
-function TreeMapGamesContainer() {
-  return (
-    <div className="TreeMapGamesContainer">
       <TreeMapGamesSVG />
     </div>
   );

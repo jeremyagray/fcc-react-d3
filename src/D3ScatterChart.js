@@ -9,14 +9,6 @@ import * as d3 from 'd3';
 function ScatterChart() {
   return (
     <div className="ScatterChart">
-      <ScatterChartContainer />
-    </div>
-  );
-}
-
-function ScatterChartContainer() {
-  return (
-    <div className="ScatterChartContainer">
       <ScatterChartSVG />
     </div>
   );
@@ -41,7 +33,6 @@ function ScatterChartSVG() {
       try {
         const response = await axios.get(dataURL);
         if (isMounted) {
-          console.log(response.data);
           setScatterData(response.data);
           setLoadingScatterData(false);
           generateScatterChart(scatterData, ref.current);

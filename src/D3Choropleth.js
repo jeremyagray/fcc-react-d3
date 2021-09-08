@@ -10,14 +10,6 @@ import * as topojson from 'topojson-client';
 function Choropleth() {
   return (
     <div className="Choropleth">
-      <ChoroplethContainer />
-    </div>
-  );
-}
-
-function ChoroplethContainer() {
-  return (
-    <div className="ChoroplethContainer">
       <ChoroplethSVG />
     </div>
   );
@@ -46,8 +38,6 @@ function ChoroplethSVG() {
         const educationResponse = await axios.get(educationDataURL);
         const geoResponse = await axios.get(geoDataURL);
         if (isMounted) {
-          console.log(educationResponse.data);
-          console.log(geoResponse.data);
           setEducationData(educationResponse.data);
           setGeoData(geoResponse.data);
           setLoadingData(false);

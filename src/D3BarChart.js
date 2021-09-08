@@ -9,14 +9,6 @@ import * as d3 from 'd3';
 function BarChart() {
   return (
     <div className="BarChart">
-      <BarChartContainer />
-    </div>
-  );
-}
-
-function BarChartContainer() {
-  return (
-    <div className="BarChartContainer">
       <BarChartSVG />
     </div>
   );
@@ -40,10 +32,8 @@ function BarChartSVG() {
     async function fetchData() {
       try {
         const response = await axios.get(dataURL);
-        console.log(response);
         if (isMounted) {
           setData(response.data);
-          console.log(data['id']);
           setLoadingData(false);
           generateBarChart(data, ref.current);
         }
