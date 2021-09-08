@@ -141,41 +141,25 @@ function generateChoropleth(edu, geo, element) {
     'WY': 'Wyoming'
   };
   
-  // Data massage.
-  // This builds a good data structure, but d3.geoPath() expects the geojson data as items in the .data() argument array.
-  // const features = topojson.feature(geo, geo.objects.counties).features;
-  // let data = [];
-  // for (let i = 0; i < edu.length; i++)
-  // {
-  //   let obj = {fips: edu[i].fips, postal_code: edu[i].state, state: getStateName(edu[i].state), name: edu[i].area_name, percent: edu[i].bachelorsOrHigher, features: features.filter((item) => {if (item.id == edu[i].fips){return item;}})};
-  //   data.push(obj);
-  // }
+  // Data processing.
   // Let's place the education data in the properties object
   // of each feature, like
   // https://bl.ocks.org/JulienAssouline/1ae3480c5277e2eecd34b71515783d6f
-  // It would really help to understand the geoJSON format better.
-  // let features = topojson.feature(geo, geo.objects.counties).features;
   let json = topojson.feature(geo, geo.objects.counties);
   // Find a fips match and add the county, state, and education data.
   for (let i = 0; i < json.features.length; i++)
   {
-    // Filter the education data to find the correct county.
-    let counties = edu.filter((item) =>
-      {
-        return item.fips === json.features[i].id;
-      });
-    if (counties.length > 1)
-    {
-      throw new Error(`There is more than one entry in the education data for county ${json.features[i].id}.`);
+    // Find the correct county data for the feature.
+    for (let j = 0; j < edu.length; j++) {
+      if (edu[j].fips === json.features[i].id) {
+        json.features[i].properties.postal_code = edu[j].state || '';
+        json.features[i].properties.state = states[edu[j].state] || '';
+        json.features[i].properties.name = edu[j].area_name || '';
+        json.features[i].properties.percent = edu[j].bachelorsOrHigher;
+
+        break;
+      }
     }
-    let county = counties[0];
-    // Assign the county data to the properties object of the
-    // corresponding county object in the geoJSON feature
-    // array.
-    json.features[i].properties.postal_code = county.state || '';
-    json.features[i].properties.state = states[county.state] || '';
-    json.features[i].properties.name = county.area_name || '';
-    json.features[i].properties.percent = county.bachelorsOrHigher;
   }
 
   // Visualization properties.
@@ -215,7 +199,7 @@ function generateChoropleth(edu, geo, element) {
   // Graph description.
   svg.append('text')
     .attr('id', 'title')
-    .attr('x', (graphSize.width / 2))
+    .attr('x', (palletteSize.width / 2))
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '24px')
@@ -225,7 +209,7 @@ function generateChoropleth(edu, geo, element) {
   // Graph description.
   svg.append('text')
     .attr('id', 'description')
-    .attr('x', (graphSize.width / 2))
+    .attr('x', (palletteSize.width / 2))
     .attr('y', 40)
     .attr('text-anchor', 'middle')
     .style('font-size', '16px')
