@@ -6,15 +6,48 @@ import {
 import axios from 'axios';
 import * as d3 from 'd3';
 
-function TreeMapGames() {
+function TreeMap() {
+  const [type, setType] = useState('games');
+
   return (
-    <div className="TreeMapGames">
-      <TreeMapGamesSVG />
+    <div className="TreeMap">
+      <TreeMapSelector
+        type={type}
+        setType={setType}
+      />
+      <TreeMapSVG
+        type={type}
+      />
     </div>
   );
 }
 
-function TreeMapGamesSVG() {
+function TreeMapSelector(props) {
+  function changer(e) {
+    props.setType(e.target.value);
+  }
+
+  return (
+    <div
+      id='TreeMapSelector'
+    >
+      <label htmlFor="treemap-select">Select the Data:</label>
+      <br />
+      <select
+        name="treemap-types"
+        id="treemap-select"
+        value={props.type}
+        onChange={changer}
+      >
+        <option value="pledges">Tree Map:  Kickstarter Pledges</option>
+        <option value="movies">Tree Map:  Movies</option>
+        <option value="games">Tree Map:  Video Game Sales</option>
+      </select>
+    </div>
+  );
+}
+
+function TreeMapSVG(props) {
   // Refs.
   const ref = useRef();
 
@@ -22,10 +55,25 @@ function TreeMapGamesSVG() {
   const [data, setData] = useState({'name': ''});
   const [loadingData, setLoadingData] = useState(true);
   const [loadingDataError, setLoadingDataError] = useState(null);
+  const [dataURL, setDataURL] = useState('');
 
   useEffect(() => {
-    // const dataURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json';
-    const dataURL = process.env.PUBLIC_URL + '/data/video-game-sales-data.json';
+    // let dataURL = '';
+
+    if (props.type === 'pledges') {
+      // dataURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json';
+      // dataURL = process.env.PUBLIC_URL + '/data/kickstarter-funding-data.json';
+      setDataURL(process.env.PUBLIC_URL + '/data/kickstarter-funding-data.json');
+    } else if (props.type === 'movies') {
+      // dataURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json';
+      // dataURL = process.env.PUBLIC_URL + '/data/movie-data.json';
+      setDataURL(process.env.PUBLIC_URL + '/data/movie-data.json');
+    } else if (props.type === 'games') {
+      // dataURL = 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json';
+      // dataURL = process.env.PUBLIC_URL + '/data/video-game-sales-data.json';
+      setDataURL(process.env.PUBLIC_URL + '/data/video-game-sales-data.json');
+    }
+
     let isMounted = true;
     setLoadingData(true);
 
@@ -35,7 +83,7 @@ function TreeMapGamesSVG() {
         if (isMounted) {
           setData(response.data);
           setLoadingData(false);
-          generateTreeMapGames(data, ref.current);
+          generateTreeMap(data, ref.current);
         }
       } catch (error) {
         if (isMounted) {
@@ -51,13 +99,13 @@ function TreeMapGamesSVG() {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data['name']]);
+  }, [data['name'], dataURL, props.type]);
 
   if (loadingData) {
     return (
       <div>
         <p>
-          Loading cycling data...
+          Loading data...
         </p>
       </div>
     );
@@ -78,16 +126,9 @@ function TreeMapGamesSVG() {
   }
 }
 
-export default TreeMapGames;
+export default TreeMap;
 
-function generateTreeMapGames(games, element) {
-  // Kickstarter pledges.
-  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json
-  // Movie sales.
-  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json
-  // Video games sales.
-  // https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json
-
+function generateTreeMap(games, element) {
   // Visualization dimensions.
   const palletteDimensions = {
     'height': 1100,
@@ -158,9 +199,10 @@ function generateTreeMapGames(games, element) {
   let getGraphScaleColor = d3.scaleOrdinal(d3.schemeCategory10);
 
   // Visualization SVG.
+  d3.selectAll('svg').remove();
   const svg = d3.select(element)
         .append('svg')
-        .attr('id', 'title')
+        .attr('id', 'TreeMapSVG')
         .attr('height', palletteDimensions.height)
         .attr('width', palletteDimensions.width)
         .style('background-color', '#ffffff')
@@ -227,6 +269,7 @@ function generateTreeMapGames(games, element) {
         return d.data.name;
       });
 
+  d3.selectAll('div#tooltip').remove();
   const tooltip = d3.select(element)
         .append('div')
         .attr('id', 'tooltip')
