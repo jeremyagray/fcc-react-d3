@@ -156,6 +156,7 @@ function generateScatterChart(data, element) {
         .range([graphDimensions.bottom, graphDimensions.top]);
 
   // Visualization SVG.
+  d3.selectAll('svg').remove();
   const svg = d3.select(element)
         .append('svg')
         .attr('id', 'scatterChartSVG')
@@ -183,6 +184,7 @@ function generateScatterChart(data, element) {
     .text('Alp de Huez Times (mm:ss)');
 
   // Tooltip.
+  d3.selectAll('div#tooltip').remove();
   const tooltip = d3.select(element)
         .append('div')
         .attr('id', 'tooltip')
