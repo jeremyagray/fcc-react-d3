@@ -20,6 +20,7 @@
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
+    "@tmcw/togeojson": "^4.5.0",
     "axios": "^0.21.1",
     "d3": "^7.0.0",
     "react": "^17.0.2",
@@ -74,8 +75,8 @@
   "scripts": {
     "build": "react-scripts build",
     "cover": "react-scripts test --coverage",
-    "lint": "eslint '**/*.js'",
-    "lint-fix": "eslint '**/*.js' --fix",
+    "lint": "eslint 'src/*.js'",
+    "lint-fix": "eslint 'src/*.js' --fix",
     "start": "BROWSER=none react-scripts start",
     "test": "react-scripts test"
   },
