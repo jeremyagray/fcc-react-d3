@@ -28,6 +28,7 @@
     "react-scripts": "4.0.3",
     "shpjs": "^4.0.2",
     "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1",
     "web-vitals": "^1.1.1"
   },
   "description": "FCC React/D3 Demonstration",
