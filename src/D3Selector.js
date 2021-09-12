@@ -9,8 +9,10 @@ import HeatMap from './D3HeatMap.js';
 import Choropleth from './D3Choropleth.js';
 import TreeMapGames from './D3TreeMap.js';
 
+import AlabamaMap from './D3Alabama.js';
+
 function Selector() {
-  const [graph, setGraph] = useState('tree');
+  const [graph, setGraph] = useState('state');
 
   if (graph === 'bar') {
     return (
@@ -62,6 +64,16 @@ function Selector() {
         <TreeMapGames />
       </div>
     );
+  } else if (graph === 'state') {
+    return (
+      <div className="root">
+        <SelectorDropDown
+          graph={graph}
+          setGraph={setGraph}
+        />
+        <AlabamaMap />
+      </div>
+    );
   }
 }
 
@@ -84,6 +96,7 @@ function SelectorDropDown(props) {
         <option value="scatter">Scatter Chart</option>
         <option value="heat">Heat Map</option>
         <option value="choro">Choropleth</option>
+        <option value="state">Map of Alabama</option>
         <option value="tree">Tree Map</option>
       </select>
     </div>
