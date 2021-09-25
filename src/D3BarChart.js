@@ -170,8 +170,9 @@ function generateBarChart(raw, element) {
       {
         return (d.gdp / gdpMax) * maxBarHeight;
       })
-    .on('mouseenter mouseover', (event, datum) =>
-      {
+    .on('mouseenter mouseover', function(event, datum) {
+        d3.select(this).attr('fill', '#ffffff');
+
         tooltip
 	  .attr('id', 'tooltip')
 	  .style('display', 'inline')
@@ -184,14 +185,14 @@ function generateBarChart(raw, element) {
 	  .attr('data-gdp', datum.gdp)
 	  .html(`<p>${quarterize(datum.date)}:  ${billions(datum.gdp)}</p>`);
       })
-    .on('mousemove', (event, datum) =>
-      {
+    .on('mousemove', function(event, datum) {
         tooltip
           .style('left', (event.pageX + 20) + 'px')
           .style('top', (event.pageY + 20) + 'px');
       })
-    .on('mouseout mouseleave', (event, datum) =>
-      {
+    .on('mouseout mouseleave', function(event, datum) {
+        d3.select(this).attr('fill', '#005900');
+
         tooltip
           .style('opacity', '0')
 	  .style('display', 'none')

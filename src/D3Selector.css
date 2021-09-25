@@ -19,8 +19,3 @@ svg
     margin-right: auto;
     /* border: 2px solid gold; */
 }
-
-.bar:hover
-{
-    fill: #ffffff;
-}
